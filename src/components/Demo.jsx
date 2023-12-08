@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-
+import { useState } from "react";
 import { copy, linkIcon, loader, tick } from "../assets";
 import { useLazyGetSummaryQuery } from "../services/article";
 
@@ -8,55 +7,29 @@ const Demo = () => {
     url: "",
     summary: "",
   });
-  const [allArticles, setAllArticles] = useState([]);
   const [copied, setCopied] = useState("");
+  const [history, setHistory] = useState([]);
 
   // RTK lazy query
   const [getSummary, { error, isFetching }] = useLazyGetSummaryQuery();
 
-  // Load data from localStorage on mount
-  useEffect(() => {
-    const articlesFromLocalStorage = JSON.parse(
-      localStorage.getItem("articles")
-    );
-
-    if (articlesFromLocalStorage) {
-      setAllArticles(articlesFromLocalStorage);
-    }
-  }, []); //execution at the start of the application - meaning of the []
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const existingArticle = allArticles.find(
-      (item) => item.url === article.url
-    );
-
-    if (existingArticle) return setArticle(existingArticle);
-
     const { data } = await getSummary({ articleUrl: article.url });
     if (data?.summary) {
-      const newArticle = { ...article, summary: data.summary };
-      const updatedAllArticles = [newArticle, ...allArticles];
-
-      // update state and local storage
-      setArticle(newArticle);
-      setAllArticles(updatedAllArticles);
-      localStorage.setItem("articles", JSON.stringify(updatedAllArticles));
+      setArticle({ ...article, summary: data.summary });
+      setHistory((prevHistory) => [
+        { url: article.url, summary: data.summary },
+        ...prevHistory,
+      ]);
     }
   };
 
-  // copy the url and toggle the icon for user feedback
   const handleCopy = (copyUrl) => {
     setCopied(copyUrl);
     navigator.clipboard.writeText(copyUrl);
     setTimeout(() => setCopied(false), 3000);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.keyCode === 13) {
-      handleSubmit(e);
-    }
   };
 
   return (
@@ -78,9 +51,8 @@ const Demo = () => {
             placeholder='Paste the article link'
             value={article.url}
             onChange={(e) => setArticle({ ...article, url: e.target.value })}
-            onKeyDown={handleKeyDown}
             required
-            className='url_input peer' // When you need to style an element based on the state of a sibling element, mark the sibling with the peer class, and use peer-* modifiers to style the target element
+            className='url_input peer'
           />
           <button
             type='submit'
@@ -92,7 +64,7 @@ const Demo = () => {
 
         {/* Browse History */}
         <div className='flex flex-col gap-1 max-h-60 overflow-y-auto'>
-          {allArticles.reverse().map((item, index) => (
+          {history.map((item, index) => (
             <div
               key={`link-${index}`}
               onClick={() => setArticle(item)}
@@ -119,7 +91,7 @@ const Demo = () => {
           <img src={loader} alt='loader' className='w-20 h-20 object-contain' />
         ) : error ? (
           <p className='font-inter font-bold text-black text-center'>
-            Well, that wasnt supposed to happen...
+            Well, that was not supposed to happen...
             <br />
             <span className='font-satoshi font-normal text-gray-700'>
               {error?.data?.error}

@@ -12,11 +12,13 @@ const Hero = () => {
         </button>
       </nav>
       <h1 className='head_text'>Summarize Articles with<br className='max-mid:hidden'/>
-      <span className='orange_gradient'>OpenAI GPT-4</span></h1>
+      <span className='orange_gradient'>OpenAI </span></h1>
       <h2 className='desc'>
         Simplify your reading with Sumz, an open-source article summarizer that transforms
         lengthy articles into clear and concize summaries.
       </h2>
+      <strong><em>KINDLY PASTE ONLY THE ARTICLE LINKS</em></strong>
+
     </header>
   )
 }
