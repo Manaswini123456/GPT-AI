@@ -8,9 +8,7 @@ Article Summarizer is a web application that uses OpenAI's language model to sum
 - [Features](#features)
 - [Technologies Used](#technologies-used)
 - [Getting Started](#getting-started)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
+
 
 ## Introduction
 
