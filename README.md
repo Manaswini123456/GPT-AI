@@ -37,10 +37,7 @@ Follow these instructions to set up the project on your local machine for develo
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/article-summarizer.git
-
-# Navigate to the project directory
-cd article-summarizer
+git clone https://github.com/Manaswini123456/GPT-AI.git
 
 # Install dependencies
 npm install
